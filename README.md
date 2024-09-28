@@ -8,8 +8,8 @@ AbinitioTools is a Python package for convinient tools of quantum chemical calcu
   - A charge-charge correlation function
   - An exciton correlation function
 - Calculation of Green's function for a mean-field calculation
-- Detection of a metal-insulator transition
-  - Under consideration
+- Under consideration
+  - Detection of a metal-insulator transition
 
 ## Usages
 
