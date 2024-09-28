@@ -1,5 +1,5 @@
 # abinitioTools
-AbinitioTools is a Python package for convinient tools for quantum chemical calculations.
+AbinitioTools is a Python package for convinient tools of quantum chemical calculations.
 
 ## Features
 - Correlation functions
