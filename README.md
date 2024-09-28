@@ -7,14 +7,13 @@ AbinitioTools is a Python package for convinient tools for quantum chemical calc
   - A spin-spin correlation function
   - A charge-charge correlation function
   - An exciton correlation function
-- Calculation of Green's function
+- Calculation of Green's function for a mean-field calculation
 - Detection of a metal-insulator transition
   - Under consideration
 
 ## Usages
 
 ```python
-
 from pyscf import gto, dft
 dist = 0.7
 E = 10
@@ -40,7 +39,7 @@ mf_jj.calc_jj(0, 1)
 ```shell
 conda create -n abtool python=3.10
 conda activate abtool
-git clone /spgrep.git
-cd spgrep
+git clone https://github.com/nkitamuraQC/abinitioTools.git
+cd abinitioTools
 pip install -e .
 ```
