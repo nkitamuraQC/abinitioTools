@@ -6,13 +6,14 @@ class AbinitioToolsClass:
     def __init__(self, mol):
         self.mol = mol
 
-    def run_dft(self, E):
+    def run_dft(self, E, xc=None):
         mol = self.mol
         mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
         h =(mol.intor('cint1e_kin_sph') + mol.intor('cint1e_nuc_sph')
           + np.einsum('x,xij->ij', E, mol.intor('cint1e_r_sph', comp=3)))
         self.mol = mol
         self.mf = dft.RKS(self.mol)
+        self.mf.xc = xc
         self.mf.get_hcore = lambda *args: h
         self.mf.kernel()
         self.mf = self.mf.to_rhf()
@@ -42,6 +43,20 @@ class AbinitioToolsClass:
         self.mycc.kernel()
         return
 
+    def run_tddft(self, nstates=10):
+        self.mytd = tddft.TDDFT(self.mf)
+        self.mytd.nstates = nstates
+        self.td_e, self.td_xy = self.mytd.kernel()
+        self.mytd.analyze()
+        return
+
+    def calc_exciton_corr(self, target=1):
+        X = self.td_xy[target][0]
+        Y = self.td_xy[target][1]
+        mo_occ = self.mf.mo_coeff[:,:nocc]
+        mo_vir = self.mf.mo_coeff[:,nocc:]
+        X_ao = np.einsum("ia,mi,na->mn", X, mo_occ, mo_vir)
+        return X_ao
 
     def calc_jj(self, site_i, site_j, calc_type="ccsd"):
         if calc_type == "scf":
