@@ -48,3 +48,4 @@ pip install -e .
 
 ## ToDo
 - Inspect initialization of DMs
+- formatting
