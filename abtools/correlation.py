@@ -59,6 +59,9 @@ class AbinitioToolsClass:
         return X_ao
 
     def calc_jj(self, site_i, site_j, calc_type="ccsd"):
+        """
+        Compute a current-current correlation function
+        """
         if calc_type == "scf":
             dm1 = self.mf.make_rdm1()
             dm2 = self.mf.make_rdm2()
@@ -82,6 +85,9 @@ class AbinitioToolsClass:
     
     
     def calc_green(self, omega_list, eta=0.01):
+        """
+        Compute a Green's function
+        """
         omega = np.array(omega_list)
         e = self.mf.mo_energy
         mo = self.mf.mo_coeff
@@ -89,7 +95,7 @@ class AbinitioToolsClass:
         green = np.einsum("an,bn,on->abo", mo, mo, 1./denom)
         return green
 
-　　　def calc_chg_corr(self, site_i, site_j):
+　　 def calc_chg_corr(self, site_i, site_j):
         if self.dm1 is not None:
             dm1 = self.dm1
         if self.dm2 is not None:
@@ -109,6 +115,7 @@ class AbinitioToolsClass:
             mo = self.mf.mo_coeff
             hcore = self.mol.intor('cint1e_kin_sph') + self.mol.intor('cint1e_nuc_sph')
             hcore = hcore[site_i, site_j]
+            dm1 = np.einsum("ai,bj,ij->ab", mo, mo, dm1)
             dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
         corr = 0
         norb = dm1.shape[0]
