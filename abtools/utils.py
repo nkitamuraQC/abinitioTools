@@ -17,4 +17,10 @@ def heatmap_ao(mf, data):
     sns.heatmap(df, cmap='coolwarm', annot=True)
     plt.show()
     return
+
+def plot_corr(corr):
+
+    plt.plot(corr[0,:])
+    plt.show()
+    return
   
