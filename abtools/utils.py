@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-def plot_ao(mf, data):
+def heatmap_ao(mf, data):
     ao_labels = mf.mol.ao_labels()
     assert(data.shape[0] == len(ao_labels))
     assert(data.shape[1] == len(ao_labels))
