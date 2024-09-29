@@ -16,6 +16,7 @@ AbinitioTools is a Python package for convinient tools of quantum chemical calcu
 ```python
 from pyscf import gto, dft
 import numpy as np
+from abtools import correlation
 dist = 0.7
 E = 10
 hydrogen = gto.M(
@@ -30,7 +31,7 @@ hydrogen = gto.M(
 )
     
 Efield = np.array([0, 0, E])
-mf_jj = DFT_JJ(hydrogen)
+mf_jj = correlation.AbinitioToolsClass(hydrogen)
 mf_jj.run_dft(E)
 mf_jj.calc_jj(0, 1)
 ```
