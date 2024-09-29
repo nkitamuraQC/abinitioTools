@@ -140,6 +140,6 @@ class AbinitioToolsClass:
         rdm_ = numpy.einsum("pqrs -> rspq",dm2[1])
         rdm_ = rdm_.conj()
         rdm2_baab[i,j] = -dm_[i,i,j,j]
-    spin_corr = rdm2_aaaa + rdm2_bbbb +  rdm2_abba + rdm2_baab
-    return spin_corr,rdm1,rdm2
+        spin_corr = rdm2_aaaa + rdm2_bbbb +  rdm2_abba + rdm2_baab
+        return spin_corr
 
