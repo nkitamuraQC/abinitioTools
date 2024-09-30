@@ -31,7 +31,7 @@ hydrogen = gto.M(
 )
     
 Efield = np.array([0, 0, E])
-mf_jj = correlation.AbinitioToolsClass(hydrogen)
+mf_jj = correlation.AbinitioToolsclass(hydrogen)
 mf_jj.run_dft(E)
 mf_jj.calc_jj(0, 1)
 ```
