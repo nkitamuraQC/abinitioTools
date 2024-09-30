@@ -11,5 +11,9 @@ setup(
     packages=find_packages(),  
     install_requires=load_requirements('requirements.txt'), 
     author='Naoki Kitamura',   
-    url='https://github.com/nkitamuraQC/abinitioTools.git',  
+    url='https://github.com/nkitamuraQC/abinitioTools.git', 
+    tests_require=[
+        'pytest',  # pytestをテストに使う
+    ],
+    test_suite='pytest',  # pytestを利用する 
 )
