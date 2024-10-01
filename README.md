@@ -1,5 +1,5 @@
 # abinitioTools
-AbinitioTools is a Python package for convinient tools of quantum chemical calculations.
+AbinitioTools is a Python package for convenient tools of quantum chemical calculations.
 
 ## Features
 - Application of static electric field for HF, DFT and CCSD calculations
@@ -27,7 +27,7 @@ hydrogen = gto.M(
         H  0.000000  0.00000  {dist*2}
         H  0.000000  0.00000  {dist*3}
     ''',
-    basis = 'sto-3g',  # 基底関数系: STO-3Gを使用
+    basis = 'sto-3g',
     verbose = 0,
 )
     
