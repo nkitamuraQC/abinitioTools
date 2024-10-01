@@ -4,10 +4,10 @@ AbinitioTools is a Python package for convenient tools of quantum chemical calcu
 ## Features
 - Application of static electric field for HF, DFT and CCSD calculations
 - Correlation functions
-  - A same-time and same-position current-current correlation function
-  - A spin-spin correlation function
-  - A charge-charge correlation function
-  - An exciton correlation function
+  - Same-time and same-position current-current correlation function
+  - Spin-spin correlation function
+  - Ccharge-charge correlation function
+  - Exciton correlation function
 - Calculation of Green's function for a mean-field calculation
 - Under consideration
   - Detection of a metal-insulator transition for a periodic system
