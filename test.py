@@ -4,15 +4,17 @@ from pyscf import gto
 from pyscf.fci import direct_spin1
 import numpy as np
 
+
 def generate_ints(norb, U=3):
     int1e = np.zeros((norb, norb), dtype=float)
     int2e = np.zeros((norb, norb, norb, norb), dtype=float)
 
     for i in range(norb):
-        int1e[i, (i+1)%norb] = 1
-        int1e[(i+1)%norb, i] = 1
+        int1e[i, (i + 1) % norb] = 1
+        int1e[(i + 1) % norb, i] = 1
         int2e[i, i, i, i] = U
     return int1e, int2e
+
 
 def test_spin_corr():
     norb = 8
@@ -28,9 +30,10 @@ def test_spin_corr():
     s00 = myclass.calc_spin_corr(0, 0)
     s01 = myclass.calc_spin_corr(0, 1)
     s02 = myclass.calc_spin_corr(0, 2)
-    assert(s00 > s01)
-    assert(s01 > s02)
+    assert s00 > s01
+    assert s01 > s02
     return
+
 
 def test_chg_corr():
     norb = 8
@@ -46,8 +49,8 @@ def test_chg_corr():
     s00 = myclass.calc_chg_corr(0, 0)
     s01 = myclass.calc_chg_corr(0, 1)
     s02 = myclass.calc_chg_corr(0, 2)
-    assert(s00 > s01)
-    assert(s01 > s02)
+    assert s00 > s01
+    assert s01 > s02
     return
 
 
@@ -65,25 +68,25 @@ def test_cc_corr():
     s00 = myclass.calc_jj(0, 0)
     s01 = myclass.calc_jj(0, 1)
     s02 = myclass.calc_jj(0, 2)
-    assert(s00 > s01)
-    assert(s01 > s02)
+    assert s00 > s01
+    assert s01 > s02
     return
-   
+
 
 def test_example():
     dist = 0.7
     E = 10
     hydrogen = gto.M(
-        atom = f'''
+        atom=f"""
             H  0.000000  0.00000  0.000000
             H  0.000000  0.00000  {dist}
             H  0.000000  0.00000  {dist*2}
             H  0.000000  0.00000  {dist*3}
-        ''',
-        basis = 'sto-3g',  # 基底関数系: STO-3Gを使用
-        verbose = 0,
+        """,
+        basis="sto-3g",  # 基底関数系: STO-3Gを使用
+        verbose=0,
     )
-        
+
     Efield = np.array([0, 0, E])
     mf_jj = AbinitioToolsclass(hydrogen)
     mf_jj.run_dft(Efield)
@@ -93,21 +96,22 @@ def test_example():
 
 def run_example(dist, E, to):
     hydrogen = gto.M(
-        atom = f'''
+        atom=f"""
             H  0.000000  0.00000  0.000000
             H  0.000000  0.00000  {dist}
             H  0.000000  0.00000  {dist*2}
             H  0.000000  0.00000  {dist*3}
-        ''',
-        basis = 'sto-3g',  # 基底関数系: STO-3Gを使用
-        verbose = 0,
+        """,
+        basis="sto-3g",  # 基底関数系: STO-3Gを使用
+        verbose=0,
     )
-        
+
     Efield = np.array([0, 0, E])
     mf_jj = AbinitioToolsclass(hydrogen)
     mf_jj.run_dft(Efield)
     jj = mf_jj.calc_jj(0, to)
     return jj
+
 
 def test_jj():
     dist = 1
@@ -125,8 +129,8 @@ def test_jj():
     to = 1
     jj_301 = run_example(dist, E, to)
 
-    assert(jj_101 > jj_201)
-    assert(jj_201 > jj_301)
+    assert jj_101 > jj_201
+    assert jj_201 > jj_301
 
     dist = 1
     E = 1
@@ -138,8 +142,8 @@ def test_jj():
     to = 1
     jj_121 = run_example(dist, E, to)
 
-    assert(jj_121 > jj_111)
-    assert(jj_111 > jj_101)
+    assert jj_121 > jj_111
+    assert jj_111 > jj_101
 
     dist = 1
     E = 0
@@ -151,14 +155,7 @@ def test_jj():
     to = 3
     jj_103 = run_example(dist, E, to)
 
-    assert(jj_101 > jj_102)
-    assert(jj_102 > jj_103)
+    assert jj_101 > jj_102
+    assert jj_102 > jj_103
 
     return
-
-    
-
-
-
-
-
