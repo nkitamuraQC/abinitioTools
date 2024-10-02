@@ -16,6 +16,29 @@
   - $JJ = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
     - ($|\Psi\rangle$ is a wavefunction of system)
   - In this program, $JJ$ is limited to a case with same time and same position (i.e. $JJ$ has only two AO indices)
+ 
+ #### Exciton correlation
+ \[
+\begin{pmatrix}
+A & B \\
+-B^* & -A^*
+\end{pmatrix}
+\begin{pmatrix}
+X \\
+Y
+\end{pmatrix}
+= \omega
+\begin{pmatrix}
+1 & 0 \\
+0 & -1
+\end{pmatrix}
+\begin{pmatrix}
+X \\
+Y
+\end{pmatrix}
+\]
+- $ |\Phi_X \rangle = \sum_{mi} X_{mi}|mi\rangle$ で表される。
+- $X_{mi}$を分子軌道係数でAO基底に変換しexciton相関を得る。
 
  #### Green's function for a mean-field calculation
  - see Eq.7 of https://arxiv.org/abs/2002.05875
