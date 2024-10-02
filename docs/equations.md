@@ -12,10 +12,10 @@
 - Assumptions
   - A transfer integral between m th atomic orbital(AO) and n th AO is denoted by $t_{mn}$
   - current operator $\hat{J}$: see below of Eq.3 of https://arxiv.org/abs/1807.01625
-- current-current correlation function $JJ$ is defined as below
-  - $JJ = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
+- current-current correlation function $C_{J}$ is defined as below
+  - $ C_{J}= \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
     - ($|\Psi\rangle$ is a wavefunction of system)
-  - In this program, $JJ$ is limited to a case with same time and same position (i.e. $JJ$ has only two AO indices)
+  - In this program, $C_{J}$ is limited to a case with same time and same position (i.e. $JJ$ has only two AO indices)
  
  #### Exciton correlation
  \[
