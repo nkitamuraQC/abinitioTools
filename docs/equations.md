@@ -1,3 +1,13 @@
+<!-- <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js">
+</script>
+<script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+ tex2jax: {
+ inlineMath: [['$', '$'] ],
+ displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+ }
+ });
+</script> -->
 #### Current-current correlation function
 - Assumptions
   - A transfer integral between $m$th atomic orbital(AO) and $n$th AO is denoted by $t_{mn}$
