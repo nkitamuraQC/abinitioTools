@@ -9,3 +9,4 @@
 
  #### Green's function for a mean-field calculation
  - see Eq.7 of https://arxiv.org/abs/2002.05875
+   - In this program, real space not reciprocal space is treated.
