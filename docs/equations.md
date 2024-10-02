@@ -10,9 +10,8 @@
 </script> -->
 #### Current-current correlation function
 - Assumptions
-  - A transfer integral between $m$th atomic orbital(AO) and $n$th AO is denoted by $t_{mn}$
-  - current operator:
- $\hat{J}=i\sum_{mn\sigma}t_{mn}(\hat{a}^{\dagger}_{m\sigma}\hat{a}_{n\sigma}-\mathrm{H.c.})$
+  - A transfer integral between m th atomic orbital(AO) and n th AO is denoted by $t_{mn}$
+  - current operator $\hat{J}$: see below of Eq.3 of https://arxiv.org/abs/1807.01625
 - current-current correlation function $JJ$ is defined as below
   - $JJ = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
     - ($|\Psi\rangle$ is a wavefunction of system)
