@@ -6,3 +6,6 @@
   - $JJ = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
     - ($|\Psi\rangle$ is a wavefunction of system)
   - In this program, $JJ$ is limited to a case with same time and same position (i.e. $JJ$ has only two indices)
+
+ #### Green's function for a mean-field calculation
+ - see Eq.7 of https://arxiv.org/abs/2002.05875
