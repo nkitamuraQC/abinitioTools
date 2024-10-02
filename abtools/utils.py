@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def heatmap_ao(mf, data):
+def heatmap_ao(mf, data, path="./heatmap_ao.png"):
     ao_labels = mf.mol.ao_labels()
     assert data.shape[0] == len(ao_labels)
     assert data.shape[1] == len(ao_labels)
@@ -16,7 +16,7 @@ def heatmap_ao(mf, data):
 
     df = pd.DataFrame(data, columns=ao_info, index=ao_info)
     sns.heatmap(df, cmap="coolwarm", annot=True)
-    plt.show()
+    plt.savefig(path)
     return
 
 

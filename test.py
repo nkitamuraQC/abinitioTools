@@ -1,5 +1,6 @@
 import pytest
 from abtools.correlation import AbinitioToolsclass
+from abtools.utils import heatmap_ao
 from pyscf import gto
 from pyscf.fci import direct_spin1
 import numpy as np
@@ -159,3 +160,31 @@ def test_jj():
     assert jj_102 > jj_103
 
     return
+
+def test_util():
+    E = 0
+    dist = 0.75
+    hydrogen = gto.M(
+        atom=f"""
+            H  0.000000  0.00000  0.000000
+            H  0.000000  0.00000  {dist}
+            H  0.000000  0.00000  {dist*2}
+            H  0.000000  0.00000  {dist*3}
+        """,
+        basis="sto-3g",  # 基底関数系: STO-3Gを使用
+        verbose=0,
+    )
+
+    Efield = np.array([0, 0, E])
+    mf_jj = AbinitioToolsclass(hydrogen)
+    mf_jj.run_dft(Efield)
+    nao = len(hydrogen.ao_labels())
+    jj_all = np.zeros((nao, nao))
+    for i in range(nao):
+        for j in range(nao):
+            jj_all[i, j] = mf_jj.calc_jj(i, j)
+
+    heatmap_ao(mf_jj.mf, jj_all)
+    return
+
+
