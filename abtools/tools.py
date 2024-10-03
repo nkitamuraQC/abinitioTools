@@ -220,6 +220,9 @@ class AbinitioToolsClass:
         hcore = hcore[site_i, site_j]
         dm1, dm2 = self._init_dms(calc_type)
 
+        if isinstance(dm1, list) or isinstance(dm2, list):
+            raise NotImplementedError
+
         ijji = dm1[site_i, site_i] + dm2[site_i, site_j, site_j, site_i]
         jiij = dm1[site_j, site_j] + dm2[site_j, site_i, site_i, site_j]
         ijij = dm2[site_i, site_j, site_i, site_j]
