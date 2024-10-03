@@ -18,9 +18,7 @@ class AbinitioToolsClass:
         Run restricted Kohn-Sham DFT calculation
 
         Args:
-            E (np.ndarray): electric field.
-
-        Kwargs:
+            E (np.ndarray): electric field
             xc (str): XC functional
         """
         mol = self.mol
@@ -84,7 +82,7 @@ class AbinitioToolsClass:
         """
         Run TDDFT calculation
 
-        Kwargs:
+        Args:
             nstates (int): number of states
         """
         self.mytd = tddft.TDDFT(self.mf)
@@ -97,7 +95,7 @@ class AbinitioToolsClass:
         """
         Calculates the exciton correlation function based on atomic orbitals.
 
-        Kwargs:
+        Args:
             target (int): target state
             
         Returns:
@@ -117,8 +115,6 @@ class AbinitioToolsClass:
         Args:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
-
-        Kwargs:
             calc_type (str): calculation types ("scf" or "ccsd")
             
         Returns:
@@ -169,8 +165,6 @@ class AbinitioToolsClass:
         Args:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
-
-        Kwargs:
             calc_type (str): calculation types ("scf" or "ccsd")
             
         Returns:
@@ -220,8 +214,6 @@ class AbinitioToolsClass:
         Args:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
-
-        Kwargs:
             calc_type (str): calculation types ("scf" or "ccsd")
             
         Returns:
@@ -247,18 +239,17 @@ class AbinitioToolsClass:
             hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
             hcore = hcore[site_i, site_j]
             dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
-        corr = 0
         norb = dm1.shape[0]
-        delta = numpy.identity(norb, dtype=float)
+        delta = np.identity(norb, dtype=float)
 
         i = site_i
         j = site_j
 
-        rdm2_aaaa[i, j] = delta[i, j] * dm1[0][j, i] - dm2[0][i, j, j, i]
-        rdm2_bbbb[i, j] = delta[i, j] * dm1[1][j, i] - dm2[2][i, j, j, i]
-        rdm2_abba[i, j] = -dm2[1][i, i, j, j]
-        rdm_ = numpy.einsum("pqrs -> rspq", dm2[1])
+        rdm2_aaaa = delta[i, j] * dm1[0][j, i] - dm2[0][i, j, j, i]
+        rdm2_bbbb = delta[i, j] * dm1[1][j, i] - dm2[2][i, j, j, i]
+        rdm2_abba = -dm2[1][i, i, j, j]
+        rdm_ = np.einsum("pqrs -> rspq", dm2[1])
         rdm_ = rdm_.conj()
-        rdm2_baab[i, j] = -dm_[i, i, j, j]
+        rdm2_baab = -rdm_[i, i, j, j]
         spin_corr = rdm2_aaaa + rdm2_bbbb + rdm2_abba + rdm2_baab
         return spin_corr

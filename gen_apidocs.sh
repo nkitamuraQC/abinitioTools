@@ -1,0 +1,1 @@
+pdoc --html abtools --output-dir docs --force
