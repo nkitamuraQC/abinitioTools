@@ -32,9 +32,32 @@ hydrogen = gto.M(
 )
     
 Efield = np.array([0, 0, E])
-mf_jj = tools.AbinitioToolsclass(hydrogen)
+mf_jj = tools.AbinitioToolsClass(hydrogen)
 mf_jj.run_dft(E)
 mf_jj.calc_jj(0, 1)
+```
+
+```python
+from pyscf import gto, dft
+import numpy as np
+from abtools import tools
+dist = 0.7
+E = 10
+hydrogen = gto.M(
+    atom = f'''
+        H  0.000000  0.00000  0.000000
+        H  0.000000  0.00000  {dist}
+        H  0.000000  0.00000  {dist*2}
+        H  0.000000  0.00000  {dist*3}
+    ''',
+    basis = 'sto-3g',
+    verbose = 0,
+)
+    
+Efield = np.array([0, 0, E])
+mf_jj = tools.AbinitioToolsClass(hydrogen)
+mf_jj.run_uks(E)
+mf_jj.calc_spin_corr(0, 1)
 ```
 
 ## Installation

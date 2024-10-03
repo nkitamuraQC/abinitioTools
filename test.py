@@ -1,5 +1,5 @@
 import pytest
-from abtools.tools import AbinitioToolsclass
+from abtools.tools import AbinitioToolsClass
 from abtools.utils import heatmap_ao
 from pyscf import gto
 from pyscf.fci import direct_spin1
@@ -21,7 +21,7 @@ def test_spin_corr():
     norb = 8
     nelec = 12
     mol = gto.Mole()
-    myclass = AbinitioToolsclass(mol)
+    myclass = AbinitioToolsClass(mol)
     int1e, int2e = generate_ints(norb)
     cis = direct_spin1.FCISolver()
     e, c = cis.kernel(int1e, int2e, norb, nelec)
@@ -40,7 +40,7 @@ def test_chg_corr():
     norb = 8
     nelec = 12
     mol = gto.Mole()
-    myclass = AbinitioToolsclass(mol)
+    myclass = AbinitioToolsClass(mol)
     int1e, int2e = generate_ints(norb)
     cis = direct_spin1.FCISolver()
     e, c = cis.kernel(int1e, int2e, norb, nelec)
@@ -59,7 +59,7 @@ def test_cc_corr():
     norb = 8
     nelec = 12
     mol = gto.Mole()
-    myclass = AbinitioToolsclass(mol)
+    myclass = AbinitioToolsClass(mol)
     int1e, int2e = generate_ints(norb)
     cis = direct_spin1.FCISolver()
     e, c = cis.kernel(int1e, int2e, norb, nelec)
@@ -89,9 +89,27 @@ def test_example():
     )
 
     Efield = np.array([0, 0, E])
-    mf_jj = AbinitioToolsclass(hydrogen)
-    mf_jj.run_dft(Efield)
+    mf_jj = AbinitioToolsClass(hydrogen)
+    mf_jj.run_rks(Efield)
     mf_jj.calc_jj(0, 1)
+
+    dist = 0.7
+    E = 10
+    hydrogen = gto.M(
+        atom = f'''
+            H  0.000000  0.00000  0.000000
+            H  0.000000  0.00000  {dist}
+            H  0.000000  0.00000  {dist*2}
+            H  0.000000  0.00000  {dist*3}
+        ''',
+        basis = 'sto-3g',
+        verbose = 0,
+    )
+    
+    Efield = np.array([0, 0, E])
+    mf_jj = AbinitioToolsClass(hydrogen)
+    mf_jj.run_uks(E)
+    mf_jj.calc_spin_corr(0, 1)
     return
 
 
@@ -108,8 +126,8 @@ def run_example(dist, E, to):
     )
 
     Efield = np.array([0, 0, E])
-    mf_jj = AbinitioToolsclass(hydrogen)
-    mf_jj.run_dft(Efield)
+    mf_jj = AbinitioToolsClass(hydrogen)
+    mf_jj.run_rks(Efield)
     jj = mf_jj.calc_jj(0, to)
     return jj
 
@@ -176,8 +194,8 @@ def test_util():
     )
 
     Efield = np.array([0, 0, E])
-    mf_jj = AbinitioToolsclass(hydrogen)
-    mf_jj.run_dft(Efield)
+    mf_jj = AbinitioToolsClass(hydrogen)
+    mf_jj.run_rks(Efield)
     nao = len(hydrogen.ao_labels())
     jj_all = np.zeros((nao, nao))
     for i in range(nao):
