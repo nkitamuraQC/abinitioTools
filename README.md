@@ -6,7 +6,7 @@ AbinitioTools is a Python package for convenient tools of quantum chemical calcu
 - Correlation functions
   - Same-time and same-position current-current correlation function
   - Spin-spin correlation function
-  - Ccharge-charge correlation function
+  - Charge-charge correlation function
   - Exciton correlation function
 - Calculation of Green's function for a mean-field calculation
 - Under consideration
