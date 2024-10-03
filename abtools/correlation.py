@@ -13,7 +13,16 @@ class AbinitioToolsClass:
         
         self.mol = mol
 
-    def run_dft(self, E, xc=None):
+    def run_rks(self, E, xc=None):
+        """
+        Run restricted Kohn-Sham DFT calculation
+
+        Args:
+            E (np.ndarray): electric field.
+
+        Kwargs:
+            xc (str): XC functional
+        """
         mol = self.mol
         mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
         h = (
@@ -29,7 +38,13 @@ class AbinitioToolsClass:
         self.mf = self.mf.to_rhf()
         return
 
-    def run_hf(self, E):
+    def run_rhf(self, E):
+        """
+        Run restricted Hartree-Fock calculation
+
+        Args:
+            E (np.ndarray): electric field.
+        """
         mol = self.mol
         mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
         h = (
@@ -44,6 +59,12 @@ class AbinitioToolsClass:
         return
 
     def run_ccsd(self, E):
+        """
+        Run CCSD calculation
+
+        Args:
+            E (np.ndarray): electric field.
+        """
         mol = self.mol
         mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
         h = (
@@ -60,6 +81,12 @@ class AbinitioToolsClass:
         return
 
     def run_tddft(self, nstates=10):
+        """
+        Run TDDFT calculation
+
+        Kwargs:
+            nstates (int): number of states
+        """
         self.mytd = tddft.TDDFT(self.mf)
         self.mytd.nstates = nstates
         self.td_e, self.td_xy = self.mytd.kernel()
@@ -67,6 +94,15 @@ class AbinitioToolsClass:
         return
 
     def calc_exciton_corr(self, target=1):
+        """
+        Calculates the exciton correlation function based on atomic orbitals.
+
+        Kwargs:
+            target (int): target state
+            
+        Returns:
+            np.ndarray: The computed correlation function.
+        """
         X = self.td_xy[target][0]
         Y = self.td_xy[target][1]
         mo_occ = self.mf.mo_coeff[:, :nocc]
@@ -112,6 +148,12 @@ class AbinitioToolsClass:
     def calc_green(self, omega_list, eta=0.01):
         """
         Compute a Green's function
+        
+        Args:
+            omega_list (list[float]): frequency axis.
+
+        Returns:
+            np.ndarray: The computed Green's function.
         """
         omega = np.array(omega_list)
         e = self.mf.mo_energy
@@ -121,6 +163,19 @@ class AbinitioToolsClass:
         return green
 
     def calc_chg_corr(self, site_i, site_j, calc_type="scf"):
+        """
+        Calculates the charge-charge correlation function between two atomic orbitals.
+
+        Args:
+            site_i (int): The index of the first atomic orbital.
+            site_j (int): The index of the second atomic orbital.
+
+        Kwargs:
+            calc_type (str): calculation types ("scf" or "ccsd")
+            
+        Returns:
+            float: The computed correlation function between site_i and site_j.
+        """
         if self.dm1 is not None:
             dm1 = self.dm1
         if self.dm2 is not None:
@@ -159,6 +214,19 @@ class AbinitioToolsClass:
         return corr
 
     def calc_spin_corr(self, site_i, site_j, calc_type="scf"):
+        """
+        Calculates the spin-spin correlation function between two atomic orbitals.
+
+        Args:
+            site_i (int): The index of the first atomic orbital.
+            site_j (int): The index of the second atomic orbital.
+
+        Kwargs:
+            calc_type (str): calculation types ("scf" or "ccsd")
+            
+        Returns:
+            float: The computed correlation function between site_i and site_j.
+        """
         if self.dm1 is not None:
             dm1 = self.dm1
         if self.dm2 is not None:
