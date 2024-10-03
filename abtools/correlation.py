@@ -4,6 +4,13 @@ import numpy as np
 
 class AbinitioToolsClass:
     def __init__(self, mol):
+        """
+        Main class
+        
+        Args:
+            mol (pyscf.gto.Mole): PySCF mol object.
+        """
+        
         self.mol = mol
 
     def run_dft(self, E, xc=None):
