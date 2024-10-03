@@ -8,7 +8,12 @@
 
 
 \section{Current-current correlation function}
-Current operator $\hat{J}$ is formulated in the literatures. For example, see below of Eq.3 of https://arxiv.org/abs/1807.01625.
+Current operator $\hat{J}$ is formulated in the literatures. 
+For example, see below of Eq.3 of https://arxiv.org/abs/1807.01625.
+In this program, we defined the current operator below:
+\begin{equation}
+    \hat{J} = i\sum_{ij\sigma} (\hat{a}^{\dagger}_{i\sigma}\hat{a}_{j\sigma} - \hat{a}^{\dagger}_{j\sigma}\hat{a}_{i\sigma})
+\end{equation}
 Then, current-current correlation function $C_{J}$ is defined as below
 \begin{equation}
 C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle
