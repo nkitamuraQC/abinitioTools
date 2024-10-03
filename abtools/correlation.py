@@ -69,7 +69,17 @@ class AbinitioToolsClass:
 
     def calc_jj(self, site_i, site_j, calc_type="ccsd"):
         """
-        Compute a current-current correlation function
+        Calculates the current-current correlation function between two atomic orbitals.
+
+        Args:
+            site_i (int): The index of the first atomic orbital.
+            site_j (int): The index of the second atomic orbital.
+
+        Kwargs:
+            calc_type (str): calculation types ("scf" or "ccsd")
+            
+        Returns:
+            float: The computed correlation function between site_i and site_j.
         """
         if calc_type == "scf":
             dm1 = self.mf.make_rdm1()
