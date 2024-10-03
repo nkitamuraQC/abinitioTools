@@ -16,28 +16,28 @@
   - $C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
     - ($|\Psi\rangle$ is a wavefunction of system)
   - In this program, $C_{J}$ is limited to a case with same time and same position (i.e. $JJ$ has only two AO indices)
+
+#### Spin-spin correlation function
+The z component of the spin operator is given below, ignoring the constant multiple terms.
+<img src="./s_op.png" alt="数式" width="50%">  
+<br>  
+Spin-spin correlation function is given below:
+<img src="./ss.png" alt="数式" width="40%">
+
+#### Spin-spin correlation function
+Occupation number operator at site $i$ is given below
+<img src="./n_i.png" alt="数式" width="50%">  
+<br>  
+Charge-charge correlation function is given below:
+<img src="./nn.png" alt="数式" width="70%">
  
  #### Exciton correlation
- \[
-\begin{pmatrix}
-A & B \\
--B^* & -A^*
-\end{pmatrix}
-\begin{pmatrix}
-X \\
-Y
-\end{pmatrix}
-= \omega
-\begin{pmatrix}
-1 & 0 \\
-0 & -1
-\end{pmatrix}
-\begin{pmatrix}
-X \\
-Y
-\end{pmatrix}
-\]
-- $ |\Phi_X \rangle = \sum_{mi} X_{mi}|mi\rangle$ で表される。
+ RPA方程式は
+<img src="./rpa_eq.png" alt="数式" width="50%">  
+RPA波動関数は以下で表される。
+<img src="./rpa_wfn.png" alt="数式" width="50%">
+- ただし、$m$は占有軌道のインデックス, $i$は仮想軌道のインデックス、
+- $|mi\rangle$は$\hat{a}^{\dagger}_{i}\hat{a}_{m}|\mathrm{HF}\rangle$
 - $X_{mi}$を分子軌道係数でAO基底に変換しexciton相関を得る。
 
  #### Green's function for a mean-field calculation
