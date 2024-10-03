@@ -33,7 +33,7 @@ hydrogen = gto.M(
     
 Efield = np.array([0, 0, E])
 mf_jj = tools.AbinitioToolsClass(hydrogen)
-mf_jj.run_dft(E)
+mf_jj.run_rks(E)
 mf_jj.calc_jj(0, 1)
 ```
 
