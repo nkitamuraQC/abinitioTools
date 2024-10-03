@@ -15,23 +15,34 @@ Current operator $\hat{J}$: see below of Eq.3 of https://arxiv.org/abs/1807.0162
 
 \subsection{Definition}
 Current-current correlation function $C_{J}$ is defined as below
-$C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle$ 
+\begin{equation}
+C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle
+\end{equation}
 (where $|\Psi\rangle$ is a wavefunction of system)
 In this program, $C_{J}$ is limited to a case with same time and same position (i.e. $JJ$ has only two AO indices)
 
 \section{Spin-spin correlation function}
 The z component of the spin operator is given below, ignoring the constant multiple terms.
-$S^{z} = \sum_{i} (a^{\dagger}_{i\alpha}a_{i\alpha} - a^{\dagger}_{i\beta}a_{i\beta})$
+\begin{equation}
+    S^{z} = \sum_{i} (a^{\dagger}_{i\alpha}a_{i\alpha} - a^{\dagger}_{i\beta}a_{i\beta})
+\end{equation}
+
 Spin-spin correlation function is given below:
-$C_{s} = \langle \Psi | \hat{S}^{z}\hat{S}^{z} | \Psi \rangle$
+\begin{equation}
+C_{s} = \langle \Psi | \hat{S}^{z}\hat{S}^{z} | \Psi \rangle
+\end{equation}
 
 \section{Charge-charge correlation function}
 Occupation number operator at site $i$ is given below:
-$\hat{n}_{i} = \hat{a}^{\dagger}_{i\alpha}\hat{a}_{i\alpha} + \hat{a}^{\dagger}_{i\beta}\hat{a}_{i\beta}$
+\begin{equation}
+\hat{n}_{i} = \hat{a}^{\dagger}_{i\alpha}\hat{a}_{i\alpha} + \hat{a}^{\dagger}_{i\beta}\hat{a}_{i\beta}
+\end{equation}
 Charge-charge correlation function is given below:
-$C_{n}^{ij} = \langle \Psi | \hat{n}_{i}\hat{n}_{j} | \Psi \rangle
+\begin{equation}
+C_{n}^{ij} = \langle \Psi | \hat{n}_{i}\hat{n}_{j} | \Psi \rangle
 - \langle \Psi | \hat{n}_{i} | \Psi \rangle
-\langle \Psi | \hat{n}_{j} | \Psi \rangle$
+\langle \Psi | \hat{n}_{j} | \Psi \rangle
+\end{equation}
 
 
 \section{Exciton correlation}
@@ -57,7 +68,9 @@ Y
 \end{equation}
 
 The RPA wavefunction is below:
-$|\Phi \rangle = \sum_{mi} (X_{mi}|mi\rangle - Y_{mi}|im\rangle)$
+\begin{equation}
+|\Phi \rangle = \sum_{mi} (X_{mi}|mi\rangle - Y_{mi}|im\rangle)
+\end{equation}
 
 Note that $m$ is the index of the occupied moleculart orbital, $i$ is the index of the virtual molecular orbital,
 and $|mi\rangle$は$\hat{a}^{\dagger}_{i}\hat{a}_{m}|\mathrm{HF}\rangle$
