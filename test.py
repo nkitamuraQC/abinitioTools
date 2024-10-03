@@ -1,5 +1,5 @@
 import pytest
-from abtools.correlation import AbinitioToolsclass
+from abtools.tools import AbinitioToolsclass
 from abtools.utils import heatmap_ao
 from pyscf import gto
 from pyscf.fci import direct_spin1

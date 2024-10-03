@@ -1,4 +1,4 @@
-from pyscf import dft, scf, cc
+from pyscf import dft, scf, cc, tddft, tdscf
 import numpy as np
 
 
@@ -12,6 +12,39 @@ class AbinitioToolsClass:
         """
         
         self.mol = mol
+        self.dm1 = None
+        self.dm2 = None
+        self.mf = None
+        self.mytd = None
+        self.mycc = None
+
+    def _init_dms(self, calc_type):
+        """
+        DMs are cached when those are calculated.
+        """
+        mo = self.mf.mo_coeff
+        if self.dm1 is not None:
+            dm1 = self.dm1
+        if self.dm2 is not None:
+            dm2 = self.dm2
+        if calc_type == "scf":
+            if self.dm1 is None:
+                dm1 = self.mf.make_rdm1()
+                self.dm1 = dm1
+            if self.dm2 is None:
+                dm2 = self.mf.make_rdm2()
+                self.dm2 = dm2
+        if calc_type == "ccsd":
+            if self.dm1 is None:
+                dm1 = self.mycc.make_rdm1()
+                dm1 = np.einsum("ai,bj,ij->ab", mo, mo, dm1)
+                self.dm1 = dm1
+            if self.dm2 is not None:
+                dm2 = self.mycc.make_rdm2()
+                dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
+                self.dm2 = dm2
+        return dm1, dm2
+        
 
     def run_rks(self, E, xc=None):
         """
@@ -29,13 +62,37 @@ class AbinitioToolsClass:
             + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
         )
         self.mol = mol
-        self.mf = dft.RKS(self.mol)
-        self.mf.xc = xc
+        self.mfks = dft.RKS(self.mol)
+        self.mfks.xc = xc
         self.mf.get_hcore = lambda *args: h
-        self.mf.kernel()
-        self.mf = self.mf.to_rhf()
+        self.mfks.kernel()
+        self.mf = self.mfks.to_rhf()
         return
 
+    def run_uks(self, E, xc=None):
+        """
+        Run unrestricted Kohn-Sham DFT calculation
+
+        Args:
+            E (np.ndarray): electric field
+            xc (str): XC functional
+        """
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor("cint1e_kin_sph")
+            + mol.intor("cint1e_nuc_sph")
+            + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
+        )
+        self.mol = mol
+        self.mfks = dft.UKS(self.mol)
+        self.mfks.xc = xc
+        self.mfks.get_hcore = lambda *args: h
+        self.mfks.kernel()
+        self.mf = self.mfks.to_uhf()
+        return
+
+    
     def run_rhf(self, E):
         """
         Run restricted Hartree-Fock calculation
@@ -52,6 +109,26 @@ class AbinitioToolsClass:
         )
         self.mol = mol
         self.mf = scf.RHF(self.mol)
+        self.mf.get_hcore = lambda *args: h
+        self.mf.kernel()
+        return
+    
+    def run_uhf(self, E):
+        """
+        Run unrestricted Hartree-Fock calculation
+
+        Args:
+            E (np.ndarray): electric field.
+        """
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor("cint1e_kin_sph")
+            + mol.intor("cint1e_nuc_sph")
+            + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
+        )
+        self.mol = mol
+        self.mf = scf.UHF(self.mol)
         self.mf.get_hcore = lambda *args: h
         self.mf.kernel()
         return
@@ -85,11 +162,29 @@ class AbinitioToolsClass:
         Args:
             nstates (int): number of states
         """
-        self.mytd = tddft.TDDFT(self.mf)
+        if isinstance(self.mf, dft.UKS):
+            raise NotImplementedError
+        self.mytd = tddft.TDDFT(self.mfks)
         self.mytd.nstates = nstates
         self.td_e, self.td_xy = self.mytd.kernel()
         self.mytd.analyze()
         return
+    
+    def run_tdscf(self, nstates=10):
+        """
+        Run TDDFT calculation
+
+        Args:
+            nstates (int): number of states
+        """
+        if isinstance(self.mf, scf.UHF):
+            raise NotImplementedError
+        self.mytd = tdscf.TDHF(self.mf)
+        self.mytd.nstates = nstates
+        self.td_e, self.td_xy = self.mytd.kernel()
+        self.mytd.analyze()
+        return
+
 
     def calc_exciton_corr(self, target=1):
         """
@@ -101,6 +196,7 @@ class AbinitioToolsClass:
         Returns:
             np.ndarray: The computed correlation function.
         """
+        nocc = self.mol.nelectron // 2
         X = self.td_xy[target][0]
         Y = self.td_xy[target][1]
         mo_occ = self.mf.mo_coeff[:, :nocc]
@@ -120,18 +216,9 @@ class AbinitioToolsClass:
         Returns:
             float: The computed correlation function between site_i and site_j.
         """
-        if calc_type == "scf":
-            dm1 = self.mf.make_rdm1()
-            dm2 = self.mf.make_rdm2()
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-        if calc_type == "ccsd":
-            dm1 = self.mycc.make_rdm1()
-            dm2 = self.mycc.make_rdm2()
-            mo = self.mf.mo_coeff
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-            dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
+        hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
+        hcore = hcore[site_i, site_j]
+        dm1, dm2 = self._init_dms(calc_type)
 
         ijji = dm1[site_i, site_i] + dm2[site_i, site_j, site_j, site_i]
         jiij = dm1[site_j, site_j] + dm2[site_j, site_i, site_i, site_j]
@@ -170,36 +257,18 @@ class AbinitioToolsClass:
         Returns:
             float: The computed correlation function between site_i and site_j.
         """
-        if self.dm1 is not None:
-            dm1 = self.dm1
-        if self.dm2 is not None:
-            dm2 = self.dm2
-        if calc_type == "scf":
-            if self.dm1 is None:
-                dm1 = self.mf.make_rdm1()
-            if self.dm2 is None:
-                dm2 = self.mf.make_rdm2()
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-        if calc_type == "ccsd":
-            if self.dm1 is None:
-                dm1 = self.mycc.make_rdm1()
-            if self.dm2 is not None:
-                dm2 = self.mycc.make_rdm2()
-            mo = self.mf.mo_coeff
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-            dm1 = np.einsum("ai,bj,ij->ab", mo, mo, dm1)
-            dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
+        if calc_type != "scf":
+            raise NotImplementedError
+        dm1, dm2 = self._init_dms(calc_type)
+        if not isinstance(dm1, list) or not isinstance(dm2, list):
+            raise NotImplementedError
         corr = 0
-        norb = dm1.shape[0]
-        identity = np.identity(norb)
         if site_i == site_j:
             corr += dm1[0][site_i, site_i] + dm1[1][site_i, site_i]
         i = site_i
         j = site_j
         corr += (
-            dm2[0][i, j, j, i]
+            - dm2[0][i, j, j, i]
             + dm2[1][i, i, j, j]
             + dm2[1][j, j, i, i]
             - dm2[2][i, j, j, i]
@@ -219,26 +288,11 @@ class AbinitioToolsClass:
         Returns:
             float: The computed correlation function between site_i and site_j.
         """
-        if self.dm1 is not None:
-            dm1 = self.dm1
-        if self.dm2 is not None:
-            dm2 = self.dm2
-        if calc_type == "scf":
-            if self.dm1 is None:
-                dm1 = self.mf.make_rdm1()
-            if self.dm2 is None:
-                dm2 = self.mf.make_rdm2()
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-        if calc_type == "ccsd":
-            if self.dm1 is None:
-                dm1 = self.mycc.make_rdm1()
-            if self.dm2 is not None:
-                dm2 = self.mycc.make_rdm2()
-            mo = self.mf.mo_coeff
-            hcore = self.mol.intor("cint1e_kin_sph") + self.mol.intor("cint1e_nuc_sph")
-            hcore = hcore[site_i, site_j]
-            dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
+        if calc_type != "scf":
+            raise NotImplementedError
+        dm1, dm2 = self._init_dms(calc_type)
+        if not isinstance(dm1, list) or not isinstance(dm2, list):
+            raise NotImplementedError
         norb = dm1.shape[0]
         delta = np.identity(norb, dtype=float)
 
