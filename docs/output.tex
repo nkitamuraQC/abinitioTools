@@ -8,8 +8,8 @@
 
 
 \section{Current-current correlation function}
-Current operator $\hat{J}$: see below of Eq.3 of https://arxiv.org/abs/1807.01625.
-Current-current correlation function $C_{J}$ is defined as below
+Current operator $\hat{J}$ is formulated in the literatures. For example, see below of Eq.3 of https://arxiv.org/abs/1807.01625.
+Then, current-current correlation function $C_{J}$ is defined as below
 \begin{equation}
 C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle
 \end{equation}
@@ -17,12 +17,11 @@ C_{J} = \langle \Psi | \hat{J}\hat{J} | \Psi \rangle
 In this program, $C_{J}$ is limited to a case with same time and same position (i.e. $C_{J}$ has only two AO indices)
 
 \section{Spin-spin correlation function}
-The z component of the spin operator is given below, ignoring the constant multiple term.
+The $z$ component of the spin operator is given below, ignoring the constant multiple term.
 \begin{equation}
     S^{z} = \sum_{i} (a^{\dagger}_{i\alpha}a_{i\alpha} - a^{\dagger}_{i\beta}a_{i\beta})
 \end{equation}
-
-Spin-spin correlation function is given below:
+Then, spin-spin correlation function is given below:
 \begin{equation}
 C_{s} = \langle \Psi | \hat{S}^{z}\hat{S}^{z} | \Psi \rangle
 \end{equation}
@@ -32,7 +31,7 @@ Occupation number operator at site $i$ is given below:
 \begin{equation}
 \hat{n}_{i} = \hat{a}^{\dagger}_{i\alpha}\hat{a}_{i\alpha} + \hat{a}^{\dagger}_{i\beta}\hat{a}_{i\beta}
 \end{equation}
-Charge-charge correlation function is given below:
+Then, charge-charge correlation function is given below:
 \begin{equation}
 C_{n}^{ij} = \langle \Psi | \hat{n}_{i}\hat{n}_{j} | \Psi \rangle
 - \langle \Psi | \hat{n}_{i} | \Psi \rangle
@@ -41,7 +40,7 @@ C_{n}^{ij} = \langle \Psi | \hat{n}_{i}\hat{n}_{j} | \Psi \rangle
 
 
 \section{Exciton correlation}
-The equation for random phase approximation (RPA) is below:
+The equation for random phase approximation (RPA) which is used in the TDDFT method is below:
 \begin{equation}
 \begin{pmatrix}
 A & B \\
@@ -61,15 +60,14 @@ X \\
 Y
 \end{pmatrix}
 \end{equation}
-
-The RPA wavefunction is below:
+The solution of the RPA equation (RPA wavefunction) is expressed as below:
 \begin{equation}
 |\Phi \rangle = \sum_{mi} (X_{mi}|mi\rangle - Y_{mi}|im\rangle)
 \end{equation}
 
 Note that $m$ is the index of the occupied moleculart orbital, $i$ is the index of the virtual molecular orbital,
-and $|mi\rangle$は$\hat{a}^{\dagger}_{i}\hat{a}_{m}|\mathrm{HF}\rangle$
-Convert $X_{mi}$ to AO basis with molecular orbital coefficients to obtain exciton correlation.
+and $|mi\rangle$は$\hat{a}^{\dagger}_{i}\hat{a}_{m}|\mathrm{HF}\rangle$.
+Convert $X_{mi}$ to AO basis by multiplying molecular orbital coefficient to obtain exciton correlation.
 
 \section{Green's function for a mean-field calculation}
  See Eq.7 of https://arxiv.org/abs/2002.05875.
