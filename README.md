@@ -42,7 +42,7 @@ from pyscf import gto, dft
 import numpy as np
 from abtools import tools
 dist = 0.7
-E = 10
+E = 0.
 hydrogen = gto.M(
     atom = f'''
         H  0.000000  0.00000  0.000000
