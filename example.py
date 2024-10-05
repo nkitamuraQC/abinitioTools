@@ -16,7 +16,7 @@ hydrogen = gto.M(
     verbose=0,
 )
 mf_jj = AbinitioToolsClass(hydrogen)
-mf_jj.run_rks()
+mf_jj.run_uks()
 mf_jj.calc_jj(0, 1)
 dist = 0.7
 hydrogen = gto.M(
