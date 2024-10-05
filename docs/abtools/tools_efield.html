@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>abtools API documentation</title>
+<title>abtools.tools_efield API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,32 +22,153 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>abtools</code></h1>
+<h1 class="title">Module <code>abtools.tools_efield</code></h1>
 </header>
 <section id="section-intro">
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="abtools.tools" href="tools.html">abtools.tools</a></code></dt>
+<dt id="abtools.tools_efield.AbinitioToolsEfield"><code class="flex name class">
+<span>class <span class="ident">AbinitioToolsEfield</span></span>
+<span>(</span><span>mol)</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Main class (apply electric field)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>mol</code></strong> :&ensp;<code>pyscf.gto.Mole</code></dt>
+<dd>PySCF mol object.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AbinitioToolsEfield:
+    def __init__(self, mol):
+        &#34;&#34;&#34;
+        Main class (apply electric field)
+        
+        Args:
+            mol (pyscf.gto.Mole): PySCF mol object.
+        &#34;&#34;&#34;
+        
+        self.mol = mol
+        self.dm1 = None
+        self.dm2 = None
+        self.mf = None
+        self.mytd = None
+        self.mycc = None
+
+        self.hcore = None
+        
+
+    def run_rks(self, E, xc=&#34;b3lyp&#34;):
+        &#34;&#34;&#34;
+        Run restricted Kohn-Sham DFT calculation
+
+        Args:
+            E (np.ndarray): electric field
+            xc (str): XC functional
+        &#34;&#34;&#34;
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor(&#34;cint1e_kin_sph&#34;)
+            + mol.intor(&#34;cint1e_nuc_sph&#34;)
+            + np.einsum(&#34;x,xij-&gt;ij&#34;, E, mol.intor(&#34;cint1e_r_sph&#34;, comp=3))
+        )
+        self.mol = mol
+        self.mfks = dft.RKS(self.mol)
+        self.mfks.xc = xc
+        self.mfks.get_hcore = lambda *args: h
+        self.mfks.kernel()
+        self.mf = self.mfks.to_rhf()
+        return
+
+    
+    def run_rhf(self, E):
+        &#34;&#34;&#34;
+        Run restricted Hartree-Fock calculation
+
+        &#34;&#34;&#34;
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor(&#34;cint1e_kin_sph&#34;)
+            + mol.intor(&#34;cint1e_nuc_sph&#34;)
+            + np.einsum(&#34;x,xij-&gt;ij&#34;, E, mol.intor(&#34;cint1e_r_sph&#34;, comp=3))
+        )
+        self.mol = mol
+        self.mf = scf.RHF(self.mol)
+        self.mf.get_hcore = lambda *args: h
+        self.mf.kernel()
+        return
+
+
+    def run_ccsd(self, E):
+        &#34;&#34;&#34;
+        Run CCSD calculation
+
+        Args:
+            E (np.ndarray): electric field.
+        &#34;&#34;&#34;
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor(&#34;cint1e_kin_sph&#34;)
+            + mol.intor(&#34;cint1e_nuc_sph&#34;)
+            + np.einsum(&#34;x,xij-&gt;ij&#34;, E, mol.intor(&#34;cint1e_r_sph&#34;, comp=3))
+        )
+        self.mol = mol
+        self.mf = scf.RHF(self.mol)
+        self.mf.get_hcore = lambda *args: h
+        self.mf.kernel()
+        self.mycc = cc.CCSD(self.mf)
+        self.mycc.kernel()
+        return</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="abtools.tools_efield.AbinitioToolsEfield.run_ccsd"><code class="name flex">
+<span>def <span class="ident">run_ccsd</span></span>(<span>self, E)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Run CCSD calculation</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>E</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>electric field.</dd>
+</dl></div>
 </dd>
-<dt><code class="name"><a title="abtools.tools_efield" href="tools_efield.html">abtools.tools_efield</a></code></dt>
+<dt id="abtools.tools_efield.AbinitioToolsEfield.run_rhf"><code class="name flex">
+<span>def <span class="ident">run_rhf</span></span>(<span>self, E)</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Run restricted Hartree-Fock calculation</p></div>
 </dd>
-<dt><code class="name"><a title="abtools.utils" href="utils.html">abtools.utils</a></code></dt>
+<dt id="abtools.tools_efield.AbinitioToolsEfield.run_rks"><code class="name flex">
+<span>def <span class="ident">run_rks</span></span>(<span>self, E, xc='b3lyp')</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Run restricted Kohn-Sham DFT calculation</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>E</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>electric field</dd>
+<dt><strong><code>xc</code></strong> :&ensp;<code>str</code></dt>
+<dd>XC functional</dd>
+</dl></div>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -55,11 +176,21 @@ hljs.highlightAll();
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="abtools.tools" href="tools.html">abtools.tools</a></code></li>
-<li><code><a title="abtools.tools_efield" href="tools_efield.html">abtools.tools_efield</a></code></li>
-<li><code><a title="abtools.utils" href="utils.html">abtools.utils</a></code></li>
+<li><code><a title="abtools" href="index.html">abtools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="abtools.tools_efield.AbinitioToolsEfield" href="#abtools.tools_efield.AbinitioToolsEfield">AbinitioToolsEfield</a></code></h4>
+<ul class="">
+<li><code><a title="abtools.tools_efield.AbinitioToolsEfield.run_ccsd" href="#abtools.tools_efield.AbinitioToolsEfield.run_ccsd">run_ccsd</a></code></li>
+<li><code><a title="abtools.tools_efield.AbinitioToolsEfield.run_rhf" href="#abtools.tools_efield.AbinitioToolsEfield.run_rhf">run_rhf</a></code></li>
+<li><code><a title="abtools.tools_efield.AbinitioToolsEfield.run_rks" href="#abtools.tools_efield.AbinitioToolsEfield.run_rks">run_rks</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
