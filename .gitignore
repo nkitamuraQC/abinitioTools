@@ -5,3 +5,6 @@ __pycache__
 *synctex*
 *fls
 *fdb*
+.github_sample
+.pytest_cache
+*egg-info

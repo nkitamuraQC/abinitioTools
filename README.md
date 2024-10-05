@@ -51,15 +51,13 @@ hydrogen = gto.M(
 )
 mf_jj = AbinitioToolsClass(hydrogen)
 mf_jj.run_uks()
-mf_jj._init_dms("scf")
-print(mf_jj.dm1)
 mf_jj.calc_spin_corr(0, 1)
 ```
 
 ## Installation
 
 ```shell
-conda create -n abtool python=3.10
+conda create -n abtool python=3.9
 conda activate abtool
 git clone https://github.com/nkitamuraQC/abinitioTools.git
 cd abinitioTools
