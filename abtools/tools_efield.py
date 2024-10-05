@@ -49,7 +49,7 @@ class AbinitioToolsClass:
         return dm1, dm2
         
 
-    def run_rks(self, xc="b3lyp"):
+    def run_rks(self, E, xc="b3lyp"):
         """
         Run restricted Kohn-Sham DFT calculation
 
@@ -57,9 +57,17 @@ class AbinitioToolsClass:
             E (np.ndarray): electric field
             xc (str): XC functional
         """
-
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor("cint1e_kin_sph")
+            + mol.intor("cint1e_nuc_sph")
+            + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
+        )
+        self.mol = mol
         self.mfks = dft.RKS(self.mol)
         self.mfks.xc = xc
+        self.mfks.get_hcore = lambda *args: h
         self.mfks.kernel()
         self.mf = self.mfks.to_rhf()
         return
@@ -79,12 +87,21 @@ class AbinitioToolsClass:
         return
 
     
-    def run_rhf(self):
+    def run_rhf(self, E):
         """
         Run restricted Hartree-Fock calculation
 
         """
+        mol = self.mol
+        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
+        h = (
+            mol.intor("cint1e_kin_sph")
+            + mol.intor("cint1e_nuc_sph")
+            + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
+        )
+        self.mol = mol
         self.mf = scf.RHF(self.mol)
+        self.mf.get_hcore = lambda *args: h
         self.mf.kernel()
         return
     

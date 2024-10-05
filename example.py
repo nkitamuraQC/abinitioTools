@@ -1,20 +1,3 @@
-# abinitioTools
-AbinitioTools is a Python package for convenient tools of quantum chemical calculations.
-
-## Features
-- Application of static electric field for HF, DFT and CCSD calculations
-- Correlation functions
-  - Same-time and same-position current-current correlation function
-  - Spin-spin correlation function
-  - Charge-charge correlation function
-  - Exciton correlation function
-- Calculation of Green's function for a mean-field calculation
-- Under consideration
-  - Detection of a metal-insulator transition for a periodic system
-
-## Usages
-
-```python
 from abtools.tools import AbinitioToolsClass
 from abtools.utils import heatmap_ao
 from pyscf import gto
@@ -35,9 +18,6 @@ hydrogen = gto.M(
 mf_jj = AbinitioToolsClass(hydrogen)
 mf_jj.run_rks()
 mf_jj.calc_jj(0, 1)
-```
-
-```python
 dist = 0.7
 hydrogen = gto.M(
     atom = f'''
@@ -54,14 +34,3 @@ mf_jj.run_uks()
 mf_jj._init_dms("scf")
 print(mf_jj.dm1)
 mf_jj.calc_spin_corr(0, 1)
-```
-
-## Installation
-
-```shell
-conda create -n abtool python=3.10
-conda activate abtool
-git clone https://github.com/nkitamuraQC/abinitioTools.git
-cd abinitioTools
-pip install -e .
-```
