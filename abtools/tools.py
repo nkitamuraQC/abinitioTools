@@ -97,23 +97,12 @@ class AbinitioToolsClass:
         self.mf.kernel()
         return
 
-    def run_ccsd(self, E):
+    def run_ccsd(self):
         """
         Run CCSD calculation
 
-        Args:
-            E (np.ndarray): electric field.
         """
-        mol = self.mol
-        mol.set_common_orig([0, 0, 0])  # The gauge origin for dipole integral
-        h = (
-            mol.intor("cint1e_kin_sph")
-            + mol.intor("cint1e_nuc_sph")
-            + np.einsum("x,xij->ij", E, mol.intor("cint1e_r_sph", comp=3))
-        )
-        self.mol = mol
         self.mf = scf.RHF(self.mol)
-        self.mf.get_hcore = lambda *args: h
         self.mf.kernel()
         self.mycc = cc.CCSD(self.mf)
         self.mycc.kernel()
@@ -126,8 +115,6 @@ class AbinitioToolsClass:
         Args:
             nstates (int): number of states
         """
-        if isinstance(self.mf, dft.UKS):
-            raise NotImplementedError
         self.mytd = tddft.TDDFT(self.mfks)
         self.mytd.nstates = nstates
         self.td_e, self.td_xy = self.mytd.kernel()
@@ -141,8 +128,6 @@ class AbinitioToolsClass:
         Args:
             nstates (int): number of states
         """
-        if isinstance(self.mf, scf.UHF):
-            raise NotImplementedError
         self.mytd = tdscf.TDHF(self.mf)
         self.mytd.nstates = nstates
         self.td_e, self.td_xy = self.mytd.kernel()
@@ -187,7 +172,7 @@ class AbinitioToolsClass:
             hcore = self.hcore[site_i, site_j]
         dm1, dm2 = self._init_dms(calc_type)
 
-        if isinstance(dm1, list) or isinstance(dm2, list):
+        if isinstance(dm1, tuple) or isinstance(dm2, tuple):
             raise NotImplementedError
 
         ijji = dm1[site_i, site_i] + dm2[site_i, site_j, site_j, site_i]

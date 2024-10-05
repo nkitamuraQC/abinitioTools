@@ -238,3 +238,23 @@ def test_green():
     return
 
 
+def test_exciton():
+    dist = 0.75
+    hydrogen = gto.M(
+        atom=f"""
+            H  0.000000  0.00000  0.000000
+            H  0.000000  0.00000  {dist}
+            H  0.000000  0.00000  {dist*2}
+            H  0.000000  0.00000  {dist*3}
+        """,
+        basis="sto-3g",  # 基底関数系: STO-3Gを使用
+        verbose=0,
+    )
+
+    mf_jj = AbinitioToolsClass(hydrogen)
+    mf_jj.run_rks()
+    mf_jj.run_tddft()
+    mf_jj.calc_exciton_corr()
+    return
+
+
