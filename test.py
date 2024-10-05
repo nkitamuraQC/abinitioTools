@@ -71,7 +71,7 @@ def test_cc_corr():
     myclass.hcore = int1e
     cis = direct_spin1.FCISolver()
     e, c = cis.kernel(int1e, int2e, norb, nelec)
-    dm1, dm2 = cis.make_rdm12(c, norb, nelec)
+    dm1, dm2 = cis.make_rdm12s(c, norb, nelec)
     myclass.dm1 = dm1
     myclass.dm2 = dm2
     jj01 = myclass.calc_jj(0, 1)
@@ -97,7 +97,7 @@ def test_example():
     )
 
     mf_jj = AbinitioToolsClass(hydrogen)
-    mf_jj.run_rks()
+    mf_jj.run_uks()
     mf_jj.calc_jj(0, 1)
 
     dist = 0.7
@@ -130,7 +130,7 @@ def run_example(dist, frm, to):
     )
 
     mf_jj = AbinitioToolsClass(hydrogen)
-    mf_jj.run_rks()
+    mf_jj.run_uks()
     jj = mf_jj.calc_jj(frm, to)
     return jj
 
@@ -199,12 +199,13 @@ def test_util():
     )
 
     mf_jj = AbinitioToolsClass(hydrogen)
-    mf_jj.run_rks()
+    mf_jj.run_uks()
     nao = len(hydrogen.ao_labels())
     jj_all = np.zeros((nao, nao))
     for i in range(nao):
         for j in range(nao):
-            jj_all[i, j] = mf_jj.calc_jj(i, j)
+            if i != j:
+                jj_all[i, j] = mf_jj.calc_jj(i, j)
 
     heatmap_ao(mf_jj.mf, jj_all, path="heatmap_ao_jj.png")
     return

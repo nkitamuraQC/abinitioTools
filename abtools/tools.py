@@ -171,16 +171,28 @@ class AbinitioToolsClass:
         else:
             hcore = self.hcore[site_i, site_j]
         dm1, dm2 = self._init_dms(calc_type)
-
-        if isinstance(dm1, tuple) or isinstance(dm2, tuple):
+        
+        if site_i == site_j:
             raise NotImplementedError
 
-        ijji = dm1[site_i, site_i] + dm2[site_i, site_j, site_j, site_i]
-        jiij = dm1[site_j, site_j] + dm2[site_j, site_i, site_i, site_j]
-        ijij = dm2[site_i, site_j, site_i, site_j]
-        jiji = dm2[site_j, site_i, site_j, site_i]
+        i = site_i
+        j = site_j
 
-        jj = -(-ijji + jiji + ijij - jiij) * (hcore**2)
+        dm1_aa = dm1[0]
+        dm2_aaaa = dm2[0]
+        dm2_abba = dm2[1]
+
+        jj = 0
+        jj -= dm2_aaaa[i, j, i, j] * 2
+        jj -= (dm1_aa[i, i] + dm2_aaaa[i, j, j, i]) * 2
+        jj -= (dm1_aa[j, j] + dm2_aaaa[j, i, i, j]) * 2
+        jj += dm2_abba[i, j, i, j] * 2
+        jj += dm2_abba[i, j, j, i] * 2
+        jj += dm2_abba[j, i, i, j] * 2
+        jj += dm2_abba[j, i, j, i] * 2
+
+
+        jj *= -hcore ** 2
         return jj
 
     def calc_green(self, omega_list, eta=0.01):
