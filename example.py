@@ -31,6 +31,4 @@ hydrogen = gto.M(
 )
 mf_jj = AbinitioToolsClass(hydrogen)
 mf_jj.run_uks()
-mf_jj._init_dms("scf")
-print(mf_jj.dm1)
 mf_jj.calc_spin_corr(0, 1)
