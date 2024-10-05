@@ -243,9 +243,7 @@ def test_exciton():
     hydrogen = gto.M(
         atom=f"""
             H  0.000000  0.00000  0.000000
-            H  0.000000  0.00000  {dist}
-            H  0.000000  0.00000  {dist*2}
-            H  0.000000  0.00000  {dist*3}
+            Li  0.000000  0.00000  {dist}
         """,
         basis="sto-3g",  # 基底関数系: STO-3Gを使用
         verbose=0,
