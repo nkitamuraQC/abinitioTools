@@ -179,17 +179,27 @@ class AbinitioToolsClass:
         j = site_j
 
         dm1_aa = dm1[0]
+        dm1_bb = dm1[1]
         dm2_aaaa = dm2[0]
         dm2_abba = dm2[1]
+        dm2_bbbb = dm2[2]
+        dm2_baab = np.einsum("pqrs -> rspq", dm2_abba)
 
         jj = 0
-        jj -= dm2_aaaa[i, j, i, j] * 2
-        jj -= (dm1_aa[i, i] + dm2_aaaa[i, j, j, i]) * 2
-        jj -= (dm1_aa[j, j] + dm2_aaaa[j, i, i, j]) * 2
-        jj += dm2_abba[i, j, i, j] * 2
-        jj += dm2_abba[i, j, j, i] * 2
-        jj += dm2_abba[j, i, i, j] * 2
-        jj += dm2_abba[j, i, j, i] * 2
+        jj -= (dm2_aaaa[i, j, i, j] + dm2_bbbb[i, j, i, j])
+        jj -= (dm1_aa[i, i] + dm2_aaaa[i, j, j, i]) 
+        jj -= (dm1_aa[j, j] + dm2_aaaa[j, i, i, j]) 
+        jj -= (dm1_bb[i, i] + dm2_aaaa[i, j, j, i]) 
+        jj -= (dm1_bb[j, j] + dm2_aaaa[j, i, i, j]) 
+        jj += dm2_abba[i, j, i, j]
+        jj += dm2_abba[i, j, j, i]
+        jj += dm2_abba[j, i, i, j]
+        jj += dm2_abba[j, i, j, i]
+
+        jj += dm2_baab[i, j, i, j]
+        jj += dm2_baab[i, j, j, i]
+        jj += dm2_baab[j, i, i, j]
+        jj += dm2_baab[j, i, j, i]
 
 
         jj *= -hcore ** 2
