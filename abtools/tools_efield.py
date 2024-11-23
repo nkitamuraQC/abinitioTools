@@ -6,11 +6,11 @@ class AbinitioToolsEfield:
     def __init__(self, mol):
         """
         Main class (apply electric field)
-        
+
         Args:
             mol (pyscf.gto.Mole): PySCF mol object.
         """
-        
+
         self.mol = mol
         self.dm1 = None
         self.dm2 = None
@@ -19,7 +19,6 @@ class AbinitioToolsEfield:
         self.mycc = None
 
         self.hcore = None
-        
 
     def run_rks(self, E, xc="b3lyp"):
         """
@@ -44,7 +43,6 @@ class AbinitioToolsEfield:
         self.mf = self.mfks.to_rhf()
         return
 
-    
     def run_rhf(self, E):
         """
         Run restricted Hartree-Fock calculation
@@ -62,7 +60,6 @@ class AbinitioToolsEfield:
         self.mf.get_hcore = lambda *args: h
         self.mf.kernel()
         return
-
 
     def run_ccsd(self, E):
         """

@@ -20,14 +20,14 @@ mf_jj.run_uks()
 mf_jj.calc_jj(0, 1)
 dist = 0.7
 hydrogen = gto.M(
-    atom = f'''
+    atom=f"""
         H  0.000000  0.00000  0.000000
         H  0.000000  0.00000  {dist}
         H  0.000000  0.00000  {dist*2}
         H  0.000000  0.00000  {dist*3}
-    ''',
-    basis = 'sto-3g',
-    verbose = 0,
+    """,
+    basis="sto-3g",
+    verbose=0,
 )
 mf_jj = AbinitioToolsClass(hydrogen)
 mf_jj.run_uks()

@@ -6,11 +6,11 @@ class AbinitioToolsClass:
     def __init__(self, mol):
         """
         Main class
-        
+
         Args:
             mol (pyscf.gto.Mole): PySCF mol object.
         """
-        
+
         self.mol = mol
         self.dm1 = None
         self.dm2 = None
@@ -47,7 +47,6 @@ class AbinitioToolsClass:
                 dm2 = np.einsum("ai,bj,ck,dl,ijkl->abcd", mo, mo, mo, mo, dm2)
                 self.dm2 = dm2
         return dm1, dm2
-        
 
     def run_rks(self, xc="b3lyp"):
         """
@@ -78,7 +77,6 @@ class AbinitioToolsClass:
         self.mf = self.mfks.to_uhf()
         return
 
-    
     def run_rhf(self):
         """
         Run restricted Hartree-Fock calculation
@@ -87,7 +85,7 @@ class AbinitioToolsClass:
         self.mf = scf.RHF(self.mol)
         self.mf.kernel()
         return
-    
+
     def run_uhf(self):
         """
         Run unrestricted Hartree-Fock calculation
@@ -120,7 +118,7 @@ class AbinitioToolsClass:
         self.td_e, self.td_xy = self.mytd.kernel()
         self.mytd.analyze()
         return
-    
+
     def run_tdscf(self, nstates=10):
         """
         Run TDDFT calculation
@@ -134,14 +132,13 @@ class AbinitioToolsClass:
         self.mytd.analyze()
         return
 
-
     def calc_exciton_corr(self, target=1):
         """
         Calculates the exciton correlation function based on atomic orbitals.
 
         Args:
             target (int): target state
-            
+
         Returns:
             np.ndarray: The computed correlation function.
         """
@@ -161,7 +158,7 @@ class AbinitioToolsClass:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
             calc_type (str): calculation types ("scf" or "ccsd")
-            
+
         Returns:
             float: The computed correlation function between site_i and site_j.
         """
@@ -171,7 +168,7 @@ class AbinitioToolsClass:
         else:
             hcore = self.hcore[site_i, site_j]
         dm1, dm2 = self._init_dms(calc_type)
-        
+
         if site_i == site_j:
             raise NotImplementedError
 
@@ -186,11 +183,11 @@ class AbinitioToolsClass:
         dm2_baab = np.einsum("pqrs -> rspq", dm2_abba)
 
         jj = 0
-        jj -= (dm2_aaaa[i, j, i, j] + dm2_bbbb[i, j, i, j])
-        jj -= (dm1_aa[i, i] + dm2_aaaa[i, j, j, i]) 
-        jj -= (dm1_aa[j, j] + dm2_aaaa[j, i, i, j]) 
-        jj -= (dm1_bb[i, i] + dm2_aaaa[i, j, j, i]) 
-        jj -= (dm1_bb[j, j] + dm2_aaaa[j, i, i, j]) 
+        jj -= dm2_aaaa[i, j, i, j] + dm2_bbbb[i, j, i, j]
+        jj -= dm1_aa[i, i] + dm2_aaaa[i, j, j, i]
+        jj -= dm1_aa[j, j] + dm2_aaaa[j, i, i, j]
+        jj -= dm1_bb[i, i] + dm2_aaaa[i, j, j, i]
+        jj -= dm1_bb[j, j] + dm2_aaaa[j, i, i, j]
         jj += dm2_abba[i, j, i, j]
         jj += dm2_abba[i, j, j, i]
         jj += dm2_abba[j, i, i, j]
@@ -201,14 +198,13 @@ class AbinitioToolsClass:
         jj += dm2_baab[j, i, i, j]
         jj += dm2_baab[j, i, j, i]
 
-
-        jj *= -hcore ** 2
+        jj *= -(hcore**2)
         return jj
 
     def calc_green(self, omega_list, eta=0.01):
         """
         Compute a Green's function
-        
+
         Args:
             omega_list (list[float]): frequency axis.
 
@@ -230,7 +226,7 @@ class AbinitioToolsClass:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
             calc_type (str): calculation types ("scf" or "ccsd")
-            
+
         Returns:
             float: The computed correlation function between site_i and site_j.
         """
@@ -241,7 +237,7 @@ class AbinitioToolsClass:
         i = site_i
         j = site_j
         corr += (
-            - dm2[0][i, j, j, i]
+            -dm2[0][i, j, j, i]
             + dm2[1][i, i, j, j]
             + dm2[1][j, j, i, i]
             - dm2[2][i, j, j, i]
@@ -257,7 +253,7 @@ class AbinitioToolsClass:
             site_i (int): The index of the first atomic orbital.
             site_j (int): The index of the second atomic orbital.
             calc_type (str): calculation types ("scf" or "ccsd")
-            
+
         Returns:
             float: The computed correlation function between site_i and site_j.
         """

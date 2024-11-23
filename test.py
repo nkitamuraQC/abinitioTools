@@ -15,8 +15,8 @@ def generate_ints(norb, U=30, V=10):
         int1e[i, (i + 1) % norb] = 1
         int1e[(i + 1) % norb, i] = 1
         int2e[i, i, i, i] = U
-        int2e[i, i, (i+1)%norb, (i+1)%norb] = V
-        int2e[(i+1)%norb, (i+1)%norb, i, i] = V
+        int2e[i, i, (i + 1) % norb, (i + 1) % norb] = V
+        int2e[(i + 1) % norb, (i + 1) % norb, i, i] = V
     return int1e, int2e
 
 
@@ -102,14 +102,14 @@ def test_example():
 
     dist = 0.7
     hydrogen = gto.M(
-        atom = f'''
+        atom=f"""
             H  0.000000  0.00000  0.000000
             H  0.000000  0.00000  {dist}
             H  0.000000  0.00000  {dist*2}
             H  0.000000  0.00000  {dist*3}
-        ''',
-        basis = 'sto-3g',
-        verbose = 0,
+        """,
+        basis="sto-3g",
+        verbose=0,
     )
     mf_jj = AbinitioToolsClass(hydrogen)
     mf_jj.run_uks()
@@ -168,22 +168,23 @@ def test_jj():
     assert jj_5 > jj_4
     print("test_jj2:", jj_4, jj_5)
 
-    #dist = 1
-    #E = 1
-    #frm = 0
-    #to = 2
-    #jj_6 = run_example(dist, E, frm, to)
+    # dist = 1
+    # E = 1
+    # frm = 0
+    # to = 2
+    # jj_6 = run_example(dist, E, frm, to)
 
-    #dist = 1
-    #E = 2
-    #frm = 0
-    #to = 2
-    #jj_7 = run_example(dist, E, frm, to)
+    # dist = 1
+    # E = 2
+    # frm = 0
+    # to = 2
+    # jj_7 = run_example(dist, E, frm, to)
 
-    #assert jj_7 > jj_6
-    #print("test_jj3:", jj_6, jj_7)
+    # assert jj_7 > jj_6
+    # print("test_jj3:", jj_6, jj_7)
 
     return
+
 
 def test_util():
     dist = 0.75
@@ -210,6 +211,7 @@ def test_util():
     heatmap_ao(mf_jj.mf, jj_all, path="heatmap_ao_jj.png")
     return
 
+
 def test_green():
     dist = 0.75
     hydrogen = gto.M(
@@ -226,16 +228,16 @@ def test_green():
     mf_jj = AbinitioToolsClass(hydrogen)
     mf_jj.run_rks()
     moe = mf_jj.mf.mo_energy
-    
+
     omega = np.linspace(-2, 2, 400)
     green = mf_jj.calc_green(omega_list=omega)
     dos = np.trace(green, axis1=0, axis2=1).imag
     plt.cla()
     plt.plot(omega, dos)
     for a in moe:
-        plt.axvline(x=a, color='r')
+        plt.axvline(x=a, color="r")
     plt.savefig("./green.png")
-    
+
     return
 
 
@@ -255,5 +257,3 @@ def test_exciton():
     mf_jj.run_tddft()
     mf_jj.calc_exciton_corr()
     return
-
-
